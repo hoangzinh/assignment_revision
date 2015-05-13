@@ -11,7 +11,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150512101943) do
+ActiveRecord::Schema.define(version: 20150513075152) do
+
+  create_table "changelogs", force: :cascade do |t|
+    t.integer  "history_id"
+    t.string   "data_name"
+    t.string   "data_from"
+    t.string   "data_to"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "changelogs", ["history_id"], name: "index_changelogs_on_history_id"
+
+  create_table "histories", force: :cascade do |t|
+    t.integer  "editer_id"
+    t.integer  "edited_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "histories", ["editer_id", "edited_id"], name: "index_histories_on_editer_id_and_edited_id"
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false

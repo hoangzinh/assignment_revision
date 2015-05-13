@@ -16,9 +16,9 @@ table
       td = user.firstname
       td = user.lastname
       td = user.dob
-      td = link_to 'Show', user
       td = link_to 'Edit', edit_user_path(user)
       td = link_to 'Destroy', user, method: :delete, data: { confirm: 'Are you sure?' }
+      td = link_to 'History', user_histories_path(user)
 br/
 
 
