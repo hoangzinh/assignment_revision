@@ -6,9 +6,13 @@ html
     = javascript_include_tag 'application', 'data-turbolinks-track' => true
     = csrf_meta_tags
   body
-    - if user_signed_in? 
-      = link_to "Sign out", destroy_user_session_path, method: :DELETE
-      
-    - else
-      = link_to "Sign in", user_session_path
+    - if !flash.empty?
+      - flash.each do |key,value|
+          p[class="#{key}"] = value
+    div
+      - if user_signed_in? 
+        = link_to "Sign out", destroy_user_session_path, method: :DELETE
+        
+      - else
+        = link_to "Sign in", user_session_path
     = yield

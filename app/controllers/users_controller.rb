@@ -42,7 +42,8 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1.json
   def update
     respond_to do |format|
-      if @user.update(user_params) and update_history(@user)
+      current_info = get_info
+      if @user.update(user_params) and update_history(current_info)
         format.html { redirect_to @user, notice: 'User was successfully updated.' }
         format.json { render :show, status: :ok, location: @user }
       else
@@ -62,13 +63,7 @@ class UsersController < ApplicationController
     end
   end
 
-  def update_history(user)
-    binding.pry
-    history = user.edited_histories.create(editer_id: current_user.id)
-
-
-  end
-
+  
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
@@ -78,5 +73,28 @@ class UsersController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
       params.require(:user).permit(:firstname,:lastname,:dob)
+    end
+
+    def get_info
+      @user.serializable_hash(only: [:firstname,:lastname,:dob])
+    end
+
+    def update_history(current_info)
+      history = @user.edited_histories.create(editer_id: current_user.id)  
+      if history
+        update_changelog(history,current_info)
+      end
+    end
+
+    def update_changelog(history,current_info)
+      ret = false
+
+      diffs = current_info.map{ |k,v| v=v.to_s; [k,v]} - user_params.to_a
+      diffs.each do |diff| 
+        key = diff[0]
+        ret = history.changelogs.create(data_name: key,data_from: current_info[key], data_to: user_params[key])
+      end
+
+      ret
     end
 end

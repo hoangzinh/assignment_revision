@@ -2,7 +2,9 @@ Rails.application.routes.draw do
 
   devise_for :users
   resources :users do
-    resources :histories, only: [:index,:show]
+    resources :histories, only: [:index,:show] do
+      get 'rollback', on: :member
+    end
   end
 
   root 'users#index'
