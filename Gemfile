@@ -50,5 +50,7 @@ group :development, :test do
   gem "factory_girl_rails"
   gem "capybara"
   gem "guard-rspec"
+  gem "database_cleaner"
+  gem 'selenium-webdriver'
 end
 

@@ -1,7 +1,13 @@
-Factory.define :user do |f|
-  f.sequence(:email) { |n| "foo#{n}@example.com" }
-  f.password "foobarzz"
-  f.fistname "foo"
-  f.lastname "bar"
-  f.dob DateTime.new
+FactoryGirl.define do
+  factory :user do
+    sequence(:email) { |n| "person#{n}@example.com" }
+
+    password "foobarzz"
+
+    sequence(:firstname) { |n| "foo#{n}" }
+
+    sequence(:lastname) { |n| "bar#{n}" }
+
+    dob { 18.years.ago }
+  end
 end
