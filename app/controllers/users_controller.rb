@@ -89,10 +89,14 @@ class UsersController < ApplicationController
     def update_changelog(history,current_info)
       ret = false
 
-      diffs = current_info.map{ |k,v| v=v.to_s; [k,v]} - user_params.to_a
-      diffs.each do |diff| 
+      new_info = user_params.clone
+      new_info['dob'] = DateTime.new(params[:user]["dob(1i)"].to_i, params[:user]["dob(2i)"].to_i, params[:user]["dob(3i)"].to_i).to_s   
+      # diffs = current_info.map{ |k,v| v=v.to_s; [k,v]} - user_params.to_a
+      diffs = current_info.to_a - new_info.to_a
+
+      diffs.each do |diff|
         key = diff[0]
-        ret = history.changelogs.create(data_name: key,data_from: current_info[key], data_to: user_params[key])
+        ret = history.changelogs.create(data_name: key,data_from: current_info[key], data_to: new_info[key])
       end
 
       ret
