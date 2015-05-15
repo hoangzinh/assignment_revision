@@ -17,3 +17,5 @@
 /tmp
 
 /vendor/assets/bower_components
+/Guardfile
+/node_modules
