@@ -90,9 +90,8 @@ class UsersController < ApplicationController
       ret = false
 
       new_info = user_params.clone
-      new_info['dob'] = DateTime.new(params[:user]["dob(1i)"].to_i, params[:user]["dob(2i)"].to_i, params[:user]["dob(3i)"].to_i).to_s   
-      # diffs = current_info.map{ |k,v| v=v.to_s; [k,v]} - user_params.to_a
-      diffs = current_info.to_a - new_info.to_a
+      new_info['dob'] = Time.new(params[:user]["dob(1i)"].to_i, params[:user]["dob(2i)"].to_i, params[:user]["dob(3i)"].to_i,0,0,0,"+00:00").utc.to_s   
+      diffs = current_info.map{ |k,v| v=v.to_s; [k,v]} - new_info.to_a
 
       diffs.each do |diff|
         key = diff[0]
