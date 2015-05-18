@@ -42,8 +42,7 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1.json
   def update
     respond_to do |format|
-      current_info = get_info
-      if @user.update(user_params) and update_history(current_info)
+      if @user.valid? and @user.update_history(user_params) and @user.update(user_params)
         format.html { redirect_to @user, notice: 'User was successfully updated.' }
         format.json { render :show, status: :ok, location: @user }
       else
@@ -73,31 +72,5 @@ class UsersController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
       params.require(:user).permit(:firstname,:lastname,:dob)
-    end
-
-    def get_info
-      @user.serializable_hash(only: [:firstname,:lastname,:dob])
-    end
-
-    def update_history(current_info)
-      history = @user.edited_histories.create(editer_id: current_user.id)  
-      if history
-        update_changelog(history,current_info)
-      end
-    end
-
-    def update_changelog(history,current_info)
-      ret = false
-
-      new_info = user_params.clone
-      new_info['dob'] = Time.new(params[:user]["dob(1i)"].to_i, params[:user]["dob(2i)"].to_i, params[:user]["dob(3i)"].to_i,0,0,0,"+00:00").utc.to_s   
-      diffs = current_info.map{ |k,v| v=v.to_s; [k,v]} - new_info.to_a
-
-      diffs.each do |diff|
-        key = diff[0]
-        ret = history.changelogs.create(data_name: key,data_from: current_info[key], data_to: new_info[key])
-      end
-
-      ret
     end
 end
